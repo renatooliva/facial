@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Document</title>
+  <script defer src="//cdnjs.cloudflare.com/ajax/libs/jquery/2.1.3/jquery.min.js"> </script>
+  <script defer src="../static/js/face-api.min.js"></script>
+  <script defer src="../static/js/script.js"></script>
+  <script defer src="../static/js/progressbar.js"></script>
+  <style>
+    /* Estilos para a página */
+    
+    /* Estilos para o contêiner principal */
+    .wrapper {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh; /* Centraliza o conteúdo verticalmente */
+    }
+    
+    /* Estilos para o contêiner do círculo de progresso */
+    .green .progress,
+    .red .progress,
+    .orange .progress {
+      position: relative;
+      border-radius: 50%;
+      width: 200px;
+      height: 250px; /* Tornar o contêiner um círculo perfeito */
+    }
+    
+    .green .progress {
+      border: 5px solid #53fc53;
+      box-shadow: 0 0 20px #029502;
+      transition: all 1s ease;
+    }
+    
+    .green .progress .inner,
+    .red .progress .inner,
+    .orange .progress .inner {
+      position: absolute;
+      overflow: hidden;
+      width: 100%;
+      height: 100%;
+      top: 0;
+      left: 0;
+      border-radius: 50%;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+    
+    .green .progress .inner .glare,
+    .red .progress .inner .glare,
+    .orange .progress .inner .glare {
+      position: absolute;
+      top: -120%;
+      left: -120%;
+      z-index: 5;
+      width: 200%;
+      height: 250%;
+      transform: rotate(45deg);
+      border-radius: 50%;
+    }
+    
+    .red .progress {
+      border: 5px solid #ed3b3b;
+      box-shadow: 0 0 20px #7a0b0b;
+    }
+    
+    .orange .progress {
+      border: 5px solid #f07c3e;
+      box-shadow: 0 0 20px #7e320a;
+    }
+    
+    /* Ajuste do vídeo para preencher o círculo */
+    #video {
+      width: 150%;
+      height: 150%;
+      object-fit: cover;
+      transform: scaleX(-1);
+      border-radius: 50%; /* Garante que o vídeo também tenha bordas arredondadas */
+    }
+    </style>
+</head>
+<body>
+  
+
+
+
+<div class="wrapper">
+  <div class="green">
+    <div class="progress">
+      <div class="inner">
+        <video id="video" height="250" autoplay muted></video><br>
+      </div>
+    </div>
+  </div>  
+</div>
+
+
+</body>
+<span id="status"></span>
+</html>

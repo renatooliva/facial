@@ -1,0 +1,522 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Document</title>
+  <script  src="../static/js/libs/jquery.min.js"> </script>
+  <script  src="../static/js/libs/bootstrap.bundle.min.js"> </script>
+
+  <script defer src="../static/js/face-api.min.js"></script>
+  <script defer src="../static/js/script.js"></script>
+  <script defer src="../static/js/progressbar.js"></script>
+
+
+  <!-- Bootstrap CSS -->
+  <link rel="stylesheet" href="../static/css/libs/bootstrap.min.css">
+
+  <!-- Font Awesome CSS -->
+  <link rel="stylesheet" href="../static/css/libs/font-awesome/all.min.css">
+
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Karla:ital,wght@0,400;1,300&display=swap" rel="stylesheet">
+
+  <link rel="stylesheet" href="../static/css/style.css">
+  <style>
+    /* Estilos para a página */
+    
+    /* Estilos para o contêiner principal */
+    .wrapper {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+    
+    /* Estilos para o contêiner do círculo de progresso */
+    .green .progress,
+    .red .progress,
+    .orange .progress {
+      position: relative;
+      border-radius: 50%;
+      width: 200px;
+      height: 250px; /* Tornar o contêiner um círculo perfeito */
+    }
+    
+    .green .progress {
+      border: 5px solid #53fc53;
+      box-shadow: 0 0 20px #029502;
+      transition: all 1s ease;
+    }
+    
+    .green .progress .inner,
+    .red .progress .inner,
+    .orange .progress .inner {
+      position: absolute;
+      overflow: hidden;
+      width: 100%;
+      height: 100%;
+      top: 0;
+      left: 0;
+      border-radius: 50%;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+    
+    .green .progress .inner .glare,
+    .red .progress .inner .glare,
+    .orange .progress .inner .glare {
+      position: absolute;
+      top: -120%;
+      left: -120%;
+      z-index: 5;
+      width: 200%;
+      height: 250%;
+      transform: rotate(45deg);
+      border-radius: 50%;
+    }
+    
+    .red .progress {
+      border: 5px solid #ed3b3b;
+      box-shadow: 0 0 20px #7a0b0b;
+    }
+    
+    .orange .progress {
+      border: 5px solid #f07c3e;
+      box-shadow: 0 0 20px #7e320a;
+    }
+    
+    #video {
+      width: 150%;
+      height: 150%;
+      object-fit: cover;
+      transform: scaleX(-1);
+      border-radius: 50%;
+    }
+
+
+    #shot {
+        display: none;
+        border-radius: 15px;
+        border: 4px solid #ffffff;
+        box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.3);
+		width: 250px;
+		height: 250px;
+    }
+
+	#shot img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover; 
+}
+
+    .progress-bar {
+        border-radius: 5px;
+    }
+
+
+
+.initial {
+    filter: grayscale(100%);
+}
+
+.done {
+  filter: none;
+}
+
+.error {
+  filter: none;
+  filter: grayscale(0%) brightness(0.5) sepia(1) hue-rotate(-50deg) saturate(5);
+}
+
+.list-check {
+    border: none;
+}
+
+.list-validate {
+  display: flex;
+  justify-content: center;  /* Centraliza horizontalmente */
+  align-items: center;      /* Centraliza verticalmente */
+  width: 100%;              /* Opcional, mas pode ser útil */
+}
+
+
+.row>* {
+padding-right: 0!important;
+padding-left: 0!important;
+}
+
+    </style>
+</head>
+<body>
+  
+    <section class="wizard-section">
+		<div class="row no-gutters">
+			<div class="col-lg-6 col-md-6">
+				<div class="wizard-content-left d-flex justify-content-center align-items-center neon-image">
+                    <img class="logo"/>
+				</div>
+			</div>
+			<div class="col-lg-6 col-md-6">
+				<div class="form-wizard">
+					<form action="" method="post" role="form">
+						<div class="form-wizard-header">
+							<p>Preencha os dados corretamente em cada Etapa</p>
+							<ul class="list-unstyled form-wizard-steps clearfix">
+								<li class="active"><span>1</span></li>
+								<li><span>2</span></li>
+								<li><span>3</span></li>
+								<li><span>4</span></li>
+							</ul>
+						</div>
+						<fieldset class="wizard-fieldset  ">
+							<h5>Informações Pessoais</h5>
+							<div class="form-group">
+								<input type="text" class="form-control wizard-required" id="fname">
+								<label for="fname" class="wizard-form-text-label">Nome Completo*</label>
+								<div class="wizard-form-error"></div>
+							</div>
+                            <div class="form-group clearfix footer-buttons">
+								<a href="javascript:;" class="form-wizard-next-btn float-right">Avançar</a>
+							</div>
+						</fieldset>	
+
+						<fieldset class="wizard-fieldset show">
+							<h5>Dicas para a foto na próxima etapa</h5>
+							<div class="form-group center face-id-wrapper animate-scan">
+                                <div class="scan-bar"></div>
+								<img class="facial"/>
+							</div>
+
+
+
+							<div class="">
+								<ul class="list-group valids mt-4" style="text-align: left; width: 350px;">
+								<li class="list-group-item d-flex list-check align-items-center">
+								  <img src="../static/img/check.png" width="20px" class="me-2 done">
+								  <span>Tenho boa iluminação.</span>
+								</li>
+								<li class="list-group-item d-flex list-check align-items-center">
+								  <img src="../static/img/check.png" width="20px" class="me-2 done">
+								  <span>Vou olhar diretamente para a câmera.</span>
+								</li>
+								<li class="list-group-item d-flex list-check align-items-center">
+								  <img src="../static/img/check.png" width="20px" class="me-2 done">
+								  <span>Estou sem óculos escuros ou chapéu.</span>
+								</li>
+								<li class="list-group-item d-flex list-check align-items-center">
+									<img src="../static/img/check.png" width="20px" class="me-2 done">
+									<span>Meu rosto está completamente visível.</span>
+								  </li>
+							  </ul>
+
+
+                            <div class="form-group clearfix footer-buttons">
+								<a href="javascript:;" class="form-wizard-previous-btn float-left">Voltar</a>
+								<a href="javascript:;" class="form-wizard-next-btn float-right" id="startCam">Avançar</a>
+							</div>
+						</fieldset>	
+
+
+                        
+						<fieldset class="wizard-fieldset ">
+							<h5>Reconhecimento Facial</h5>
+							<div class="form-group">
+								
+                                <div class="wrapper">
+                                    <img id="shot" style="display: none;"/>
+
+                                    <div id="cam" class="green" style="display: block;">
+                                        <div class="progress">
+                                        <div class="inner">
+                                            <video id="video" height="250" autoplay muted></video><br>
+                                        </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="list-validate">
+                                    <ul class="list-group valids mt-4" id="action-list" style="display: none; text-align: left; width: 250px;">
+                                    
+                                  </ul>
+
+                                  
+                                </div>
+
+                                <div style="text-align: center;">
+                                    <button type="button" id="rstSelfie" class="btn btn-primary mt-4" style="display: none; margin: auto;">
+                                      Refazer a Selfie
+                                    </button>
+                                    
+                                    <div class="alert alert-primary mt-4" role="alert" id="msgCam" style="display: none; margin: auto;">
+                                    </div>   
+                                  </div>
+                                  
+                                  
+                                
+                                
+                                  
+
+                                <div class="btns ">
+                                    <div id="statusCams">
+                                    <div  style="height: 30px;" class="checks">
+                                    <div class="progress-bar" id="progressWait" style="width: 30%;" aria-valuenow="30" aria-valuemin="0" aria-valuemax="100">
+
+                                    </div>
+                                    </div>
+
+                                    <ul class="list-group checks">
+                                        <li class="list-group-item" id="check-lighting">ILUMINAÇÃO</li>
+                                        <li class="list-group-item" id="check-face">QUALIDADE</li>
+                                    </ul>
+                                    </div>
+                                    <div class="wizard-form-error" id="status"></div>
+                                </div>
+
+                                
+							</div>
+
+							<div class="form-group clearfix btnsSystem" style="display: none;">
+								<a href="javascript:;" class="form-wizard-previous-btn float-left">Voltar</a>
+								<a href="javascript:;" class="form-wizard-next-btn float-right">Avançar</a>
+							</div>
+						</fieldset>	
+						<fieldset class="wizard-fieldset">
+							<h5>Payment Information</h5>
+							<div class="form-group">
+								Payment Type
+								<div class="wizard-form-radio">
+									<input name="radio-name" id="mastercard" type="radio">
+									<label for="mastercard">Master Card</label>
+								</div>
+								<div class="wizard-form-radio">
+									<input name="radio-name" id="visacard" type="radio">
+									<label for="visacard">Visa Card</label>
+								</div>
+							</div>
+							<div class="form-group">
+								<input type="text" class="form-control wizard-required" id="honame">
+								<label for="honame" class="wizard-form-text-label">Holder Name*</label>
+								<div class="wizard-form-error"></div>
+							</div>
+							<div class="row">
+								<div class="col-lg-6 col-md-6 col-sm-6">
+									<div class="form-group">
+										<input type="text" class="form-control wizard-required" id="cardname">
+										<label for="cardname" class="wizard-form-text-label">Card Number*</label>
+										<div class="wizard-form-error"></div>
+									</div>
+								</div>
+								<div class="col-lg-6 col-md-6 col-sm-6">
+									<div class="form-group">
+										<input type="text" class="form-control wizard-required" id="cvc">
+										<label for="cvc" class="wizard-form-text-label">CVC*</label>
+										<div class="wizard-form-error"></div>
+									</div>
+								</div>
+							</div>
+							<div class="row">
+								<div class="col-12">Expiry Date</div>
+								<div class="col-lg-4 col-md-4 col-sm-4">
+									<div class="form-group">
+										<select class="form-control">
+											<option value="">Date</option>
+											<option value="">1</option>
+											<option value="">2</option>
+											<option value="">3</option>
+											<option value="">4</option>
+											<option value="">5</option>
+											<option value="">6</option>
+											<option value="">7</option>
+											<option value="">8</option>
+											<option value="">9</option>
+											<option value="">10</option>
+											<option value="">11</option>
+											<option value="">12</option>
+											<option value="">13</option>
+											<option value="">14</option>
+											<option value="">15</option>
+											<option value="">16</option>
+											<option value="">17</option>
+											<option value="">18</option>
+											<option value="">19</option>
+											<option value="">20</option>
+											<option value="">21</option>
+											<option value="">22</option>
+											<option value="">23</option>
+											<option value="">24</option>
+											<option value="">25</option>
+											<option value="">26</option>
+											<option value="">27</option>
+											<option value="">28</option>
+											<option value="">29</option>
+											<option value="">30</option>
+											<option value="">31</option>
+										</select>
+									</div>
+								</div>
+								<div class="col-lg-4 col-md-4 col-sm-4">
+									<div class="form-group">
+										<select class="form-control">
+											<option value="">Month</option>
+											<option value="">jan</option>
+											<option value="">Feb</option>
+											<option value="">March</option>
+											<option value="">April</option>
+											<option value="">May</option>
+											<option value="">June</option>
+											<option value="">Jully</option>
+											<option value="">August</option>
+											<option value="">Sept</option>
+											<option value="">Oct</option>
+											<option value="">Nov</option>
+											<option value="">Dec</option>	
+										</select>
+									</div>
+								</div>
+								<div class="col-lg-4 col-md-4 col-sm-4">
+									<div class="form-group">
+										<select class="form-control">
+											<option value="">Years</option>
+											<option value="">2019</option>
+											<option value="">2020</option>
+											<option value="">2021</option>
+											<option value="">2022</option>
+											<option value="">2023</option>
+											<option value="">2024</option>
+											<option value="">2025</option>
+											<option value="">2026</option>
+											<option value="">2027</option>
+											<option value="">2028</option>
+											<option value="">2029</option>
+											<option value="">2030</option>
+											<option value="">2031</option>
+											<option value="">2032</option>
+											<option value="">2033</option>
+											<option value="">2034</option>
+											<option value="">2035</option>
+											<option value="">2036</option>
+											<option value="">2037</option>
+											<option value="">2038</option>
+											<option value="">2039</option>
+											<option value="">2040</option>	
+										</select>
+									</div>
+								</div>
+							</div>
+							<div class="form-group clearfix">
+								<a href="javascript:;" class="form-wizard-previous-btn float-left">Previous</a>
+								<a href="javascript:;" class="form-wizard-submit float-right">Submit</a>
+							</div>
+						</fieldset>	
+					</form>
+				</div>
+			</div>
+		</div>
+	</section>
+
+</body>
+<script>
+    jQuery(document).ready(function() {
+	// click on next button
+	jQuery('.form-wizard-next-btn').click(function() {
+		var parentFieldset = jQuery(this).parents('.wizard-fieldset');
+		var currentActiveStep = jQuery(this).parents('.form-wizard').find('.form-wizard-steps .active');
+		var next = jQuery(this);
+		var nextWizardStep = true;
+		parentFieldset.find('.wizard-required').each(function(){
+			var thisValue = jQuery(this).val();
+
+			if( thisValue == "") {
+				jQuery(this).siblings(".wizard-form-error").slideDown();
+				nextWizardStep = false;
+			}
+			else {
+				jQuery(this).siblings(".wizard-form-error").slideUp();
+			}
+		});
+		if( nextWizardStep) {
+			next.parents('.wizard-fieldset').removeClass("show","400");
+			currentActiveStep.removeClass('active').addClass('activated').next().addClass('active',"400");
+			next.parents('.wizard-fieldset').next('.wizard-fieldset').addClass("show","400");
+			jQuery(document).find('.wizard-fieldset').each(function(){
+				if(jQuery(this).hasClass('show')){
+					var formAtrr = jQuery(this).attr('data-tab-content');
+					jQuery(document).find('.form-wizard-steps .form-wizard-step-item').each(function(){
+						if(jQuery(this).attr('data-attr') == formAtrr){
+							jQuery(this).addClass('active');
+							var innerWidth = jQuery(this).innerWidth();
+							var position = jQuery(this).position();
+							jQuery(document).find('.form-wizard-step-move').css({"left": position.left, "width": innerWidth});
+						}else{
+							jQuery(this).removeClass('active');
+						}
+					});
+				}
+			});
+		}
+	});
+	//click on previous button
+	jQuery('.form-wizard-previous-btn').click(function() {
+		var counter = parseInt(jQuery(".wizard-counter").text());;
+		var prev =jQuery(this);
+		var currentActiveStep = jQuery(this).parents('.form-wizard').find('.form-wizard-steps .active');
+		prev.parents('.wizard-fieldset').removeClass("show","400");
+		prev.parents('.wizard-fieldset').prev('.wizard-fieldset').addClass("show","400");
+		currentActiveStep.removeClass('active').prev().removeClass('activated').addClass('active',"400");
+		jQuery(document).find('.wizard-fieldset').each(function(){
+			if(jQuery(this).hasClass('show')){
+				var formAtrr = jQuery(this).attr('data-tab-content');
+				jQuery(document).find('.form-wizard-steps .form-wizard-step-item').each(function(){
+					if(jQuery(this).attr('data-attr') == formAtrr){
+						jQuery(this).addClass('active');
+						var innerWidth = jQuery(this).innerWidth();
+						var position = jQuery(this).position();
+						jQuery(document).find('.form-wizard-step-move').css({"left": position.left, "width": innerWidth});
+					}else{
+						jQuery(this).removeClass('active');
+					}
+				});
+			}
+		});
+	});
+	//click on form submit button
+	jQuery(document).on("click",".form-wizard .form-wizard-submit" , function(){
+		var parentFieldset = jQuery(this).parents('.wizard-fieldset');
+		var currentActiveStep = jQuery(this).parents('.form-wizard').find('.form-wizard-steps .active');
+		parentFieldset.find('.wizard-required').each(function() {
+			var thisValue = jQuery(this).val();
+			if( thisValue == "" ) {
+				jQuery(this).siblings(".wizard-form-error").slideDown();
+			}
+			else {
+				jQuery(this).siblings(".wizard-form-error").slideUp();
+			}
+		});
+	});
+	// focus on input field check empty or not
+	jQuery(".form-control").on('focus', function(){
+		var tmpThis = jQuery(this).val();
+		if(tmpThis == '' ) {
+			jQuery(this).parent().addClass("focus-input");
+		}
+		else if(tmpThis !='' ){
+			jQuery(this).parent().addClass("focus-input");
+		}
+	}).on('blur', function(){
+		var tmpThis = jQuery(this).val();
+		if(tmpThis == '' ) {
+			jQuery(this).parent().removeClass("focus-input");
+			jQuery(this).siblings('.wizard-form-error').slideDown("3000");
+		}
+		else if(tmpThis !='' ){
+			jQuery(this).parent().addClass("focus-input");
+			jQuery(this).siblings('.wizard-form-error').slideUp("3000");
+		}
+	});
+});
+</script>
+</html>
